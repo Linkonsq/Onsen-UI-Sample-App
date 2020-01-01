@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="lib/onsenui/css/dark-onsen-css-components.css">
+    <link rel="stylesheet" href="StyleDark.css">
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+</head>
+
+<body>
+    <ons-navigator id="appNavigator" swipeable swipe-target-width="80px">
+        <ons-page>
+            <ons-splitter id="appSplitter">
+                <ons-splitter-side id="sidemenu" page="sidemenu.html" swipeable side="left" collapse="" width="260px">
+                </ons-splitter-side>
+                <ons-splitter-content page="tabbar.html"></ons-splitter-content>
+            </ons-splitter>
+        </ons-page>
+    </ons-navigator>
+
+    <template id="tabbar.html">
+        <ons-page id="tabbar-page">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button onclick="fn.toggleMenu()">
+                        <ons-icon icon="md-menu"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <ons-tabbar swipeable id="appTabbar" position="auto">
+                <ons-tab label="" icon="ion-film-marker" page="login.html" active></ons-tab>
+                <ons-tab label="Dashboard" icon="ion-home" page="dashboard.html"></ons-tab>
+                <ons-tab label="Plan & Reports" icon="ion-home" page="planAndReports.html"></ons-tab>
+                <ons-tab label="Support" icon="ion-home" page="support.html"></ons-tab>
+            </ons-tabbar>
+
+            <script>
+                ons.getScriptPage().addEventListener('prechange', function (event) {
+                    if (event.target.matches('#appTabbar')) {
+                        event.currentTarget.querySelector('ons-toolbar .center').innerHTML = event.tabItem.getAttribute('label');
+                    }
+                });
+            </script>
+        </ons-page>
+    </template>
+
+    <template id="sidemenu.html">
+        <ons-page>
+            <div class="profile-pic">
+                <img class="ipdc-logo" src="ipdc.jpg" alt="IPDC Logo">
+            </div>
+
+            <ons-list>
+                <ons-list-item onclick="fn.loadView(1)">
+                    <div class="left">
+                        <i class="icon ion-md-home dashboard-icon"></i>
+                    </div>
+                    <div class="center list-border">
+                        Dashboard
+                    </div>
+                </ons-list-item>
+                <ons-list-item onclick="fn.loadView(2)">
+                    <div class="left">
+                        <i class="icon ion-md-document dashboard-icon"></i>
+                    </div>
+
+                    <div class="center list-border">
+                        Plan & Reports
+                    </div>
+                </ons-list-item>
+                <ons-list-item onclick="fn.loadView(4)">
+                    <div class="left">
+                        <i class="icon ion-md-construct dashboard-icon"></i>
+                    </div>
+                    <div class="center list-border">
+                        Support
+                    </div>
+                </ons-list-item>
+                <ons-list-item onclick="fn.loadView(0)">
+                    <div class="left">
+                        <i class="icon ion-md-log-out dashboard-icon"></i>
+                    </div>
+                    <div class="center">
+                        Sign Out
+                    </div>
+                </ons-list-item>
+            </ons-list>
+
+
+            <script>
+                ons.getScriptPage().onInit = function () {
+                    // Set ons-splitter-side animation
+                    this.parentElement.setAttribute('animation', ons.platform.isAndroid() ? 'overlay' : 'reveal');
+                };
+            </script>
+        </ons-page>
+    </template>
+
+    <template id="login.html">
+        <ons-page>
+            <script>
+                const login = () => {
+                    const username = document.querySelector('#username').value;
+                    const password = document.querySelector('#password').value;
+
+                    if (username === '' && password === '') {
+                        //fn.pushPage({ 'id': 'dashboard.html', 'title': 'dashboard' })
+                        fn.loadView(1);
+
+                    } else {
+                        ons.notification.alert('Wrong username/password combination');
+                    }
+                };
+
+            </script>
+
+            <img class="ipdc-logo" src="ipdc.jpg" alt="IPDC Logo">
+            <div class="login">
+                <ons-card class="card-radius">
+                    <ons-list>
+                        <ons-list-item class="input-items">
+                            <div class="left">
+                                <ons-icon icon="md-face" class="list-item__icon login-icon"></ons-icon>
+                            </div>
+                            <label class="center">
+                                <ons-input id="username" placeholder="Username"></ons-input>
+                            </label>
+                        </ons-list-item>
+                        <ons-list-item class="input-items">
+                            <div class="left">
+                                <i class="icon ion-md-lock login-icon lock-icon-size"></i>
+                            </div>
+                            <div class="center">
+                                <ons-input id="password" placeholder="Password"></ons-input>
+                            </div>
+                        </ons-list-item>
+                    </ons-list>
+                </ons-card>
+                <ons-button class="button loginbtn" onclick="login()">
+                    Sign In
+                </ons-button>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="dashboard.html">
+        <ons-page>
+            <div class="plan-container">
+                <div class="planReport" onclick="fn.loadView(2)">
+                    <ons-fab class="planReport-fab">
+                        <ons-icon icon="fa-file"></ons-icon>
+                    </ons-fab>
+                    <div class="planReport-text">Plan &amp; Reports</div>
+                </div>
+            </div>
+
+            <script>
+                ons.getScriptPage().onInit = function () {
+                    this.querySelector('ons-toolbar div.center').textContent = this.data.title;
+                    var pullHook = document.getElementById('pull-hook');
+                    var icon = document.getElementById('pull-hook-icon');
+                    pullHook.addEventListener('changestate', function (event) {
+                        switch (event.state) {
+                            case 'initial':
+                                icon.setAttribute('icon', 'fa-arrow-down');
+                                icon.removeAttribute('rotate');
+                                icon.removeAttribute('spin');
+                                break;
+                            case 'preaction':
+                                icon.setAttribute('icon', 'fa-arrow-down');
+                                icon.setAttribute('rotate', '180');
+                                icon.removeAttribute('spin');
+                                break;
+                            case 'action':
+                                icon.setAttribute('icon', 'fa-spinner');
+                                icon.removeAttribute('rotate');
+                                icon.setAttribute('spin', true);
+                                break;
+                        }
+                    });
+                };
+            </script>
+        </ons-page>
+    </template>
+
+    <template id="planAndReports.html">
+        <ons-page>
+            <div class="center search">
+                <ons-search-input id="search-input" placeholder="Search"></ons-search-input>
+            </div>
+            <ons-card class="card-radius plan-card">
+                <div class="content">
+                    <p class="report-card"
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">
+                        2019_Dec-2019_Dec_Unit_Traning Unit</p>
+                    <p class="report-card"
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">
+                        2019_Nov-2019_Nov_Unit_Traning Unit</p>
+                    <p class="report-card"
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">
+                        2019_Oct-2019_Oct_Unit_Traning Unit</p>
+                </div>
+            </ons-card>
+        </ons-page>
+    </template>
+
+    <template id="reportLandingPage.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button onclick="fn.loadView(1)">Reports</ons-back-button>
+                </div>
+                <div class="center">Report Landing Page</div>
+                <ons-fab class="right cancel-fab">
+                    <ons-icon icon="fa-close"></ons-icon>
+                </ons-fab>
+            </ons-toolbar>
+
+            <div class="submit-cancel">
+                <ons-button class="btn submitBtn">Submit</ons-button>
+            </div>
+
+            <div class="report-des">
+                <p><span class="report-label">Report : </span> <span class="report-text">2019_Nov-2019_Nov_Unit_Traning
+                        Unit</span></p>
+                <p><span class="report-label">Organization : </span> <span class="report-text">Test Unit</span></p>
+                <p><span class="report-label">Status : </span> <span class="report-text">Plan Submitted, Report Not
+                        Submitted</span></p>
+            </div>
+
+            <div class="personal-contact report-align">
+                <ons-list-title class="heading-title">Manpower & Personal Contacts</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'member.html', 'title': 'member'})">
+                        <div class="center">
+                            Member
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'associateMember.html', 'title': 'associateMember'})">
+                        <div class="center">
+                            Associate Member
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'preliminaryMember.html', 'title': 'preliminaryMember'})">
+                        <div class="center">
+                            Preliminary Member
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'supporter.html', 'title': 'supporter'})">
+                        <div class="center">
+                            Supporter Member
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div class="meetings-programs report-align">
+                <ons-list-title class="heading-title">Regular & Special Meetings/Programs</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            Worker Meetings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            CMS Meetings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            SM Meetings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            Member Meetings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            Dawah Meetings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            State Outing
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            Iftar Gatherings
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        <div class="center">
+                            Learning Meetings
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div class="teaching-learning report-align">
+                <ons-list-title class="heading-title">Teaching & Learning Program</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Group Study/Discussion
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Study Circle(AM)
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Study Circle
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Practice Dars/Speech
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Quran Study
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Hadith Study
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        <div class="center">
+                            Quran Class
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div class="dawah-material report-align">
+                <ons-list-title class="heading-title">Dawah Material Distribution</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            Book Sale
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            Book Distribution
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            Email Distribution
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            IPDC Leaflet Distribution
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            Other Sale
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        <div class="center">
+                            Other Distribution
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div class="finance report-align">
+                <ons-list-title class="heading-title">Finance</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
+                        <div class="center">
+                            Baitul-Mal
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
+                        <div class="center">
+                            Masjid Project
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
+                        <div class="center">
+                            Masjid Table Bank
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            <div class="social-welfare report-align">
+                <ons-list-title class="heading-title">Social Welfare</ons-list-title>
+                <ons-list modifier="inset">
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Qard-e-Hasana
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Patient Visit
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Social Visit
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Transport
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Shifting
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Shopping
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Food Distribution
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Clean Up Australia
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider"
+                        onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                        <div class="center">
+                            Other
+                        </div>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="member.html">
+        <ons-page id="member" fullscreen swipeable auto-scroll overscrollable initial-index="0">
+            <ons-toolbar>
+                <div class="center">Member</div>
+                <div class="left">
+                    <ons-back-button>Back</ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Member</ons-list-header>
+                    <ons-list-item class="input-items">
+                        <ons-input class="input-field" modifier="material" placeholder="Last Period"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Target"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Increased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Decreased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Member Contact"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
+                    </ons-list-item>
+                    <!-- <p style="text-align: center; margin-top: 0px;">
+                        <ons-button class="button-margin next-button"
+                            onclick="fn.pushPage({'id': 'associateMember.html', 'title': 'associateMember'})">
+                            <span class="nextBtn arrowed">
+                                <span class="arrow-6"></span></span>
+                        </ons-button>
+                    </p> -->
+
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'associateMember.html', 'title': 'associateMember'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+            <div class="dots">
+                <span id="dot0" class="dot" onclick="fn.loadView(1)">
+                </span>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="associateMember.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Member</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Associate Member</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Last Period"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Target"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Increased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Decreased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Member Contact"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'preliminaryMember.html', 'title': 'preliminaryMember'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+    <template id="preliminaryMember.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Member</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Preliminary Member</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Last Period"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Target"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Increased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Decreased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Member Contact"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'supporter.html', 'title': 'supporter'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="supporter.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Member</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Supporter Member</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Last Period"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Target"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Increased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Decreased"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Member Contact"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+
+    <template id="meetings.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Regular & Special Meetings</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Meetings</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Average Attendance">
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="teaching.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Teaching & Learning Program</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Teaching</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Average Attended">
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="dawah.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Dawah Material Distribution</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Dawah</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Comment">
+                    </ons-list-item>
+                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
+                        Save
+                    </ons-button>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="social.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Social Welfare</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <div>
+                <ons-list>
+                    <ons-list-header class="heading-title">Social</ons-list-header>
+                    <ons-list-item>
+                        <ons-input class="input-field" modifier="material" placeholder="Actual"></ons-input>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </ons-page>
+    </template>
+
+    <template id="finance.html">
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">Finance</div>
+                <div class="left">
+                    <ons-back-button
+                        onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
+                    </ons-back-button>
+                </div>
+            </ons-toolbar>
+            <h1>Not Implemented</h1>
+            <!-- <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">
+                Save
+            </ons-button> -->
+        </ons-page>
+    </template>
+
+    <template id="support.html">
+        <ons-page>
+            <img class="ipdc-logo" src="ipdc.jpg" alt="IPDC Logo">
+            <div style="text-align: center;">
+                <h3>IPDC Reporting System Support: </h3>
+                <h3 style="color: blue;">itssupport@ipdc.org.au</h3>
+            </div>
+        </ons-page>
+    </template>
+
+    <style>
+        ons-splitter-side[animation=overlay] {
+            border-left: 1px solid #bbb;
+        }
+
+        .tabbar__button {
+            display: none;
+        }
+
+        .tabbar--material__border {
+            background-color: transparent;
+        }
+    </style>
+    <script src="app.js"></script>
+</body>
+
+</html>
