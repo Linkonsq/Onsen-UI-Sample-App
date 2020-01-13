@@ -6,19 +6,32 @@
     <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.min.css">
     <link rel="stylesheet" href="Style.css">
     <script src="lib/onsenui/js/onsenui.min.js"></script>
+    <script>
+        ons.ready(function () {
+            //console.log("Popover is ready!");
+            ons.createPopover('popover.html');
+        });
+    </script>
 </head>
 
 <body>
-    <ons-navigator id="appNavigator" swipeable swipe-target-width="80px">
-        <ons-page>
+    <ons-navigator id="appNavigator" swipeable swipe-target-width="80px" page="login.html">
+    </ons-navigator>
+
+    <!--  The Splitter Page -->
+    <template id="home_splitter.html">
+        <ons-page id="home_splitter">
             <ons-splitter id="appSplitter">
                 <ons-splitter-side id="sidemenu" page="sidemenu.html" swipeable side="left" collapse="" width="260px">
+                </ons-splitter-side>
+                <ons-splitter-side id="usermenu" page="usermenu.html" side="right" collapse="" width="200px">
                 </ons-splitter-side>
                 <ons-splitter-content page="tabbar.html"></ons-splitter-content>
             </ons-splitter>
         </ons-page>
-    </ons-navigator>
+    </template>
 
+    <!--  Tabbar -->
     <template id="tabbar.html">
         <ons-page id="tabbar-page">
             <ons-toolbar>
@@ -27,9 +40,16 @@
                         <ons-icon icon="md-menu"></ons-icon>
                     </ons-toolbar-button>
                 </div>
+                <div class="center">Dashboard</div>
+                <!-- <ons-fab class="right user-icon" onclick="fn.userMenu()">
+                    <img class="user-img" src="car.jpg" alt="User">
+                </ons-fab> -->
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
+
             <ons-tabbar swipeable id="appTabbar" position="auto">
-                <ons-tab label="" icon="ion-film-marker" page="login.html" active></ons-tab>
                 <ons-tab label="Dashboard" icon="ion-home" page="dashboard.html"></ons-tab>
                 <ons-tab label="Plan & Reports" icon="ion-home" page="planAndReports.html"></ons-tab>
                 <ons-tab label="Support" icon="ion-home" page="support.html"></ons-tab>
@@ -45,6 +65,7 @@
         </ons-page>
     </template>
 
+    <!--  The Splitter Menu -->
     <template id="sidemenu.html">
         <ons-page>
             <div class="profile-pic">
@@ -52,7 +73,7 @@
             </div>
 
             <ons-list>
-                <ons-list-item onclick="fn.loadView(1)">
+                <ons-list-item onclick="fn.loadView(0)">
                     <div class="left">
                         <i class="icon ion-md-home dashboard-icon"></i>
                     </div>
@@ -60,7 +81,7 @@
                         Dashboard
                     </div>
                 </ons-list-item>
-                <ons-list-item onclick="fn.loadView(2)">
+                <ons-list-item onclick="fn.loadView(1)">
                     <div class="left">
                         <i class="icon ion-md-document dashboard-icon"></i>
                     </div>
@@ -69,7 +90,7 @@
                         Plan & Reports
                     </div>
                 </ons-list-item>
-                <ons-list-item onclick="fn.loadView(4)">
+                <ons-list-item onclick="fn.loadView(2)">
                     <div class="left">
                         <i class="icon ion-md-construct dashboard-icon"></i>
                     </div>
@@ -77,7 +98,31 @@
                         Support
                     </div>
                 </ons-list-item>
-                <ons-list-item onclick="fn.loadView(0)">
+            </ons-list>
+        </ons-page>
+    </template>
+
+    <!--  The Splitter Menu -->
+    <template id="usermenu.html">
+        <ons-page>
+            <ons-list>
+                <ons-list-item>
+                    <ons-fab class="left user-icon">
+                        <img class="user-img" src="car.jpg" alt="User">
+                    </ons-fab>
+                    <div class="center list-border">
+                        <b>Linkon Siddique</b>
+                    </div>
+                </ons-list-item>
+                <ons-list-item>
+                    <div class="left">
+                        <i class="icon ion-md-contact dashboard-icon"></i>
+                    </div>
+                    <div class="center list-border">
+                        My Profile
+                    </div>
+                </ons-list-item>
+                <ons-list-item onclick="fn.logout()">
                     <div class="left">
                         <i class="icon ion-md-log-out dashboard-icon"></i>
                     </div>
@@ -86,36 +131,12 @@
                     </div>
                 </ons-list-item>
             </ons-list>
-
-
-            <script>
-                ons.getScriptPage().onInit = function () {
-                    // Set ons-splitter-side animation
-                    this.parentElement.setAttribute('animation', ons.platform.isAndroid() ? 'overlay' : 'reveal');
-                };
-            </script>
         </ons-page>
     </template>
 
     <template id="login.html">
         <ons-page>
-            <script>
-                const login = () => {
-                    const username = document.querySelector('#username').value;
-                    const password = document.querySelector('#password').value;
-
-                    if (username === '' && password === '') {
-                        //fn.pushPage({ 'id': 'dashboard.html', 'title': 'dashboard' })
-                        fn.loadView(1);
-
-                    } else {
-                        ons.notification.alert('Wrong username/password combination');
-                    }
-                };
-
-            </script>
-
-            <img class="ipdc-logo" src="ipdc.jpg" alt="IPDC Logo">
+            <img class="ipdc-logo login-logo" src="ipdc.jpg" alt="IPDC Logo">
             <div class="login">
                 <ons-card class="card-radius">
                     <ons-list>
@@ -137,50 +158,30 @@
                         </ons-list-item>
                     </ons-list>
                 </ons-card>
-                <ons-button class="button loginbtn" onclick="login()">
+                <ons-button class="button loginbtn" onclick="fn.login()">
                     Sign In
                 </ons-button>
             </div>
-        </ons-page>
+            </ons-pag>
     </template>
 
     <template id="dashboard.html">
         <ons-page>
-            <div class="plan-container">
-                <div class="planReport" onclick="fn.loadView(2)">
+            <div class="dashboard-page-container">
+                <div class="planReport" onclick="fn.loadView(1)">
                     <ons-fab class="planReport-fab">
                         <ons-icon icon="fa-file"></ons-icon>
                     </ons-fab>
                     <div class="planReport-text">Plan &amp; Reports</div>
                 </div>
-            </div>
 
-            <script>
-                ons.getScriptPage().onInit = function () {
-                    this.querySelector('ons-toolbar div.center').textContent = this.data.title;
-                    var pullHook = document.getElementById('pull-hook');
-                    var icon = document.getElementById('pull-hook-icon');
-                    pullHook.addEventListener('changestate', function (event) {
-                        switch (event.state) {
-                            case 'initial':
-                                icon.setAttribute('icon', 'fa-arrow-down');
-                                icon.removeAttribute('rotate');
-                                icon.removeAttribute('spin');
-                                break;
-                            case 'preaction':
-                                icon.setAttribute('icon', 'fa-arrow-down');
-                                icon.setAttribute('rotate', '180');
-                                icon.removeAttribute('spin');
-                                break;
-                            case 'action':
-                                icon.setAttribute('icon', 'fa-spinner');
-                                icon.removeAttribute('rotate');
-                                icon.setAttribute('spin', true);
-                                break;
-                        }
-                    });
-                };
-            </script>
+                <div class="support-section" onclick="fn.loadView(2)">
+                    <ons-fab class="support-fab">
+                        <i class="icon ion-md-construct"></i>
+                    </ons-fab>
+                    <div class="support-text">Support</div>
+                </div>
+            </div>
         </ons-page>
     </template>
 
@@ -206,11 +207,14 @@
     </template>
 
     <template id="reportLandingPage.html">
-        <ons-page>
+        <ons-page id="reportLandingPage">
             <ons-toolbar>
                 <div class="left">
                     <ons-back-button onclick="fn.loadView(1)">Reports</ons-back-button>
                 </div>
+                <!-- <div class="left">
+                    <ons-back-button onclick="fn.planReports()">Reports</ons-back-button>
+                </div> -->
                 <div class="center">Report Landing Page</div>
                 <ons-fab class="right cancel-fab">
                     <ons-icon icon="fa-close"></ons-icon>
@@ -484,14 +488,67 @@
         </ons-page>
     </template>
 
+    <template id="popover.html">
+        <ons-popover id="popover-dialog" class="pop-top" cancelable direction="down" cover-target target="#info-button">
+            <ons-list id="popover-list">
+                <ons-list-item>
+                    <ons-fab class="left user-icon">
+                        <img class="user-img" src="car.jpg" alt="User">
+                    </ons-fab>
+                    <div class="center list-border">
+                        <b>Linkon Siddique</b>
+                    </div>
+                </ons-list-item>
+                <ons-list-item class="more-options" tappable onclick="fn.hideDialog('popover-dialog')">
+                    <div class="center list-border">My Profile</div>
+                </ons-list-item>
+                <ons-list-item class="more-options" tappable onclick="fn.logoutMember()">
+                    <div class="center">Sign Out</div>
+                </ons-list-item>
+            </ons-list>
+        </ons-popover>
+    </template>
+
     <template id="member.html">
-        <ons-page id="member" fullscreen swipeable auto-scroll overscrollable initial-index="0">
+        <ons-page id="member">
             <ons-toolbar>
-                <div class="center">Member</div>
                 <div class="left">
                     <ons-back-button>Back</ons-back-button>
                 </div>
+                <div class="center">Member</div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
+
+            <!-- <ons-popover id="popover-dialog" class="pop-top" cancelable direction="down" cover-target
+                target="#info-button">
+                <ons-list id="popover-list">
+                    <ons-list-item>
+                        <ons-fab class="left user-icon">
+                            <img class="user-img" src="car.jpg" alt="User">
+                        </ons-fab>
+                        <div class="center list-border">
+                            <b>Linkon Siddique</b>
+                        </div>
+                    </ons-list-item>
+                    <ons-list-item class="more-options" tappable onclick="fn.hideDialog('popover-dialog')">
+                        <div class="center list-border">My Profile</div>
+                    </ons-list-item>
+                    <ons-list-item class="more-options" tappable onclick="fn.logoutMember()">
+                        <div class="center">Sign Out</div>
+                    </ons-list-item>
+                </ons-list>
+            </ons-popover> -->
+
+            <!-- <script>
+                ons.ready(function () {
+                    console.log("Popover is ready!");
+
+                    ons.createPopover('popover.html');
+                });
+            </script> -->
+
             <div>
                 <ons-list>
                     <ons-list-header class="heading-title">Member</ons-list-header>
@@ -524,7 +581,8 @@
                         </ons-button>
                     </p> -->
 
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'associateMember.html', 'title': 'associateMember'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'associateMember.html', 'title': 'associateMember'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -544,8 +602,15 @@
                     <ons-back-button
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
+                    <!-- <ons-back-button
+                        onclick="appNavigator.popPage()">Back
+                    </ons-back-button> -->
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
+
             <div>
                 <ons-list>
                     <ons-list-header class="heading-title">Associate Member</ons-list-header>
@@ -570,7 +635,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'preliminaryMember.html', 'title': 'preliminaryMember'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'preliminaryMember.html', 'title': 'preliminaryMember'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -586,6 +652,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -611,7 +680,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'supporter.html', 'title': 'supporter'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'supporter.html', 'title': 'supporter'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -628,6 +698,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -653,7 +726,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Comment"></ons-input>
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'meetings.html', 'title': 'meetings'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -671,6 +745,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -681,7 +758,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Average Attendance">
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'teaching.html', 'title': 'teaching'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -698,6 +776,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -708,7 +789,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Average Attended">
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'dawah.html', 'title': 'dawah'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -725,6 +807,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -735,7 +820,8 @@
                     <ons-list-item>
                         <ons-input class="input-field" modifier="material" placeholder="Comment">
                     </ons-list-item>
-                    <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
+                    <ons-button class="button-margin next-button"
+                        onclick="fn.pushPage({'id': 'finance.html', 'title': 'finance'})">
                         Save
                     </ons-button>
                 </ons-list>
@@ -752,6 +838,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <div>
                 <ons-list>
@@ -773,6 +862,9 @@
                         onclick="fn.pushPage({'id': 'reportLandingPage.html', 'title': 'reportLandingPage'})">Back
                     </ons-back-button>
                 </div>
+                <ons-fab class="right user-icon" onclick="fn.showDialog('popover-dialog')">
+                    <img id="info-button" class="user-img" src="Car.jpg" alt="User">
+                </ons-fab>
             </ons-toolbar>
             <h1>Not Implemented</h1>
             <!-- <ons-button class="button-margin next-button" onclick="fn.pushPage({'id': 'social.html', 'title': 'social'})">

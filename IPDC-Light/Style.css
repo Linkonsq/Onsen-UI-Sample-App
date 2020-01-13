@@ -23,34 +23,57 @@
 .card-radius {
     border-radius: 8px;
 }
+
 .list {
     background-image: none;
 }
+
 .list-item--material.list-item--longdivider {
-    background-image: linear-gradient(0deg,#eee,#eee 100%);
-}
-.list-item--longdivider {
-     background-image: linear-gradient(0deg,#ccc,#ccc 100%);
+    background-image: linear-gradient(0deg, #eee, #eee 100%);
 }
 
+.list-item--longdivider {
+    background-image: linear-gradient(0deg, #ccc, #ccc 100%);
+}
+
+.popover__content {
+    width: 150px;
+    border-radius: 0px;
+    background-color: #969696;
+    float: right;
+}
+
+.pop-top .popover--top {
+    top: 0 !important;
+    right: 0px !important;
+}
+
+.popover-mask {
+    background-color: rgba(0, 0, 0, 0)
+}
 /*....... Dashboard.............*/
 
-.plan-container {
+.dashboard-page-container {
     margin: 0 auto;
     padding: 15px;
     display: block;
     margin-top: 30px;
 }
 
-.planReport {
+.planReport, .support-section {
     width: 200px;
     padding: 10px 0px 0px 0px;
     background-color: #eee;
     margin: 0 auto;
     border: 1px solid #dedede;
+    border-radius: 4px;
 }
 
-ons-fab.fab.planReport-fab {
+.support-section {
+    margin-top: 10px;
+}
+
+ons-fab.fab.planReport-fab, ons-fab.fab.support-fab {
     background: #0076ff;
     width: 70px;
     height: 70px;
@@ -62,7 +85,7 @@ ons-fab.fab.planReport-fab {
     color: #fff;
 }
 
-.planReport-text {
+.planReport-text, .support-text {
     color: #424242;
     text-align: center;
     padding: 10px;
@@ -197,14 +220,21 @@ ons-fab.fab.cancel-fab.toolbar--material__right {
     display: block;
     margin-bottom: 12px;
 }
+
 .button:active {
     background-color: #b2beb5;
     transition: none;
     opacity: 0.2;
 }
+
 /*...........*/
+
 .ipdc-logo {
     width: 100%;
+}
+
+.login-logo {
+    margin-top: 50px;
 }
 
 .profile-pic {
@@ -305,4 +335,40 @@ ons-list-item {
 
 .toolbar-button {
     color: #b2beb5;
+}
+
+ons-fab.fab.user-fab {
+    background: darkgray;
+    width: 30px;
+    height: 30px;
+    font-size: 28px;
+    line-height: normal;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+    margin-right: 8px;
+    margin-top: 7px;
+    color: #fff;
+}
+
+ons-fab.fab.user-icon {
+    background: darkgray;
+    width: 30px;
+    height: 30px;
+    line-height: normal;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+    margin-right: 8px;
+    margin-top: 7px;
+}
+
+.user-img {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.hide {
+    display: none !important;
 }
